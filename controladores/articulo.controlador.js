@@ -1,6 +1,6 @@
-module.exports = (router, models) => {
+module.exports = (router, servicios) => {
   router.get('/articulo', (req, res, next) => {
-    return models.Articulo.findAndCountAll()
+    return servicios.articulo.listar()
     .then((articulos) => {
       return res.status(200).json(articulos);
     })
@@ -8,58 +8,33 @@ module.exports = (router, models) => {
   });
 
   router.post('/articulo', (req, res, next) => {
-    return models.Articulo.create(req.body)
+    return servicios.articulo.crear(req.body)
     .then((articulo) => {
-      if (articulo) {
-        return res.status(201).json(articulo);
-      }
-      return res.status(400).json({});
+      return res.status(201).json(articulo);
     })
     .catch(next);
   });
 
-  // metodos get/:id, put y delete acortados para facilitar lectura
   router.get('/articulo/:id', (req, res, next) => {
-    return models.Articulo.findOne({ where: { id: req.params.id } })
+    return servicios.articulo.obtener(req.params.id)
     .then((articulo) => {
-      if (articulo) {
-        return res.status(200).json(articulo);
-      }
-      return res.status(404).json({});
+      return res.status(200).json(articulo);
     })
     .catch(next);
   });
 
   router.put('/articulo/:id', (req, res, next) => {
-    return models.Articulo.findOne({ where: { id: req.params.id } })
+    return servicios.articulo.actualizar(req.params.id, req.body)
     .then((articulo) => {
-      if (articulo) {
-        return articulo.update(req.body)
-        .then((articulo) => {
-          if (articulo) {
-            return res.status(200).json(articulo);
-          }
-          return res.status(400).json({});
-        });
-      }
-      return res.status(404).json({});
+      return res.status(200).json(articulo);
     })
     .catch(next);
   });
 
   router.delete('/articulo/:id', (req, res, next) => {
-    return models.Articulo.findOne({ where: { id: req.params.id } })
-    .then((articulo) => {
-      if (articulo) {
-        return articulo.destroy(req.body)
-        .then(() => {
-          return res.status(200).json({});
-        })
-        .catch(() => {
-          return res.status(400).json({});
-        });
-      }
-      return res.status(404).json({});
+    return servicios.articulo.eliminar(req.params.id)
+    .then(() => {
+      return res.status(200).json({});
     })
     .catch(next);
   });

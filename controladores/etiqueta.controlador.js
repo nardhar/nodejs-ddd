@@ -1,64 +1,40 @@
-module.exports = (router, models) => {
+module.exports = (router, servicios) => {
   router.get('/etiqueta', (req, res, next) => {
-    return models.Etiqueta.findAndCountAll()
+    return servicios.etiqueta.listar()
     .then((etiquetas) => {
       return res.status(200).json(etiquetas);
     })
     .catch(next);
   });
 
-  router.get('/etiqueta/:id', (req, res, next) => {
-    return models.Etiqueta.findOne({ where: { id: req.params.id } })
+  router.post('/etiqueta', (req, res, next) => {
+    return servicios.etiqueta.crear(req.body)
     .then((etiqueta) => {
-      if (etiqueta) {
-        return res.status(200).json(etiqueta);
-      }
-      return res.status(404).json({});
+      return res.status(201).json(etiqueta);
     })
     .catch(next);
   });
 
-  router.post('/etiqueta', (req, res, next) => {
-    return models.Etiqueta.create(req.body)
+  router.get('/etiqueta/:id', (req, res, next) => {
+    return servicios.etiqueta.obtener(req.params.id)
     .then((etiqueta) => {
-      if (etiqueta) {
-        return res.status(201).json(etiqueta);
-      }
-      return res.status(400).json({});
+      return res.status(200).json(etiqueta);
     })
     .catch(next);
   });
 
   router.put('/etiqueta/:id', (req, res, next) => {
-    return models.Etiqueta.findOne({ where: { id: req.params.id } })
+    return servicios.etiqueta.actualizar(req.params.id, req.body)
     .then((etiqueta) => {
-      if (etiqueta) {
-        return etiqueta.update(req.body)
-        .then((etiqueta) => {
-          if (etiqueta) {
-            return res.status(200).json(etiqueta);
-          }
-          return res.status(400).json({});
-        });
-      }
-      return res.status(404).json({});
+      return res.status(200).json(etiqueta);
     })
     .catch(next);
   });
 
   router.delete('/etiqueta/:id', (req, res, next) => {
-    return models.Etiqueta.findOne({ where: { id: req.params.id } })
-    .then((etiqueta) => {
-      if (etiqueta) {
-        return etiqueta.destroy(req.body)
-        .then(() => {
-          return res.status(200).json({});
-        })
-        .catch(() => {
-          return res.status(400).json({});
-        });
-      }
-      return res.status(404).json({});
+    return servicios.etiqueta.eliminar(req.params.id)
+    .then(() => {
+      return res.status(200).json({});
     })
     .catch(next);
   });

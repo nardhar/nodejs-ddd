@@ -15,6 +15,12 @@ Object.keys(modelos).forEach((nombre) => {
   if (modelos[nombre].asociar) modelos[nombre].asociar(modelos);
 });
 
+// cargamos los servicios
+const servicios = {};
+servicios['articulo'] = require('./servicios/articulo.servicio')(servicios, modelos);
+servicios['comentario'] = require('./servicios/comentario.servicio')(servicios, modelos);
+servicios['etiqueta'] = require('./servicios/etiqueta.servicio')(servicios, modelos);
+
 // creamos la aplicacion express
 const app = express();
 
@@ -25,9 +31,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const router = express.Router();
 
 // cargamos los controladores en el enrutador
-require('./controladores/articulo.controlador')(router, modelos);
-require('./controladores/comentario.controlador')(router, modelos);
-require('./controladores/etiqueta.controlador')(router, modelos);
+require('./controladores/articulo.controlador')(router, servicios);
+require('./controladores/comentario.controlador')(router, servicios);
+require('./controladores/etiqueta.controlador')(router, servicios);
 
 // cargamos el enrutador en la aplicacion
 app.use('/api/v1', router);
